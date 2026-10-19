@@ -3,25 +3,33 @@ import { usePrivy } from "@privy-io/react-auth";
 import { SPICEFLOW_CONFIG } from "../config/spiceflow";
 import { useFundingWallet } from "../hooks/useFundingWallet";
 
-export function SpiceDepositModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+interface SpiceDepositModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export function SpiceDepositModal({ isOpen, onClose }: SpiceDepositModalProps) {
   const { connectWallet } = usePrivy();
   const { externalAddress, embeddedAddress, isHydrating, needsReconnect } = useFundingWallet();
+
   if (!isOpen) return null;
 
   return (
     <div className="modal-backdrop">
       <div className="modal">
         <header>
-          <h2>Deposit</h2>
+          <h2>Cross-Chain Deposit</h2>
           <button onClick={onClose} aria-label="Close">✕</button>
         </header>
 
         {isHydrating ? (
-          <p>Detecting your wallet…</p>
+          <p>Detecting your funding wallet…</p>
         ) : (
           <>
             {needsReconnect && (
-              <button onClick={() => connectWallet()}>Don't see your wallet? Reconnect</button>
+              <button onClick={() => connectWallet()}>
+                Don't see your wallet? Reconnect
+              </button>
             )}
             <SpiceSupply
               destinationToken={SPICEFLOW_CONFIG.destinationToken}
